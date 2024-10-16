@@ -1,0 +1,63 @@
+import random
+
+# Codes to be used in the Main Function (BELOW)
+# Function to simulate growth of an investment
+def simulate_growth(amount, annual_rate, years, std_dev):
+    total_value = amount
+    for _ in range(years):
+        # Adjust the return based on volatility (Apart of number #5)
+        rate_variation = random.uniform(-std_dev, std_dev)
+        adjusted_rate = annual_rate + rate_variation
+        total_value *= (1 + adjusted_rate)
+    return total_value
+
+# Main
+def main():
+    while True:
+        # (1) Investment input amounts (Floats for the decimal values)
+        stocks_investment = float(input("Amount to invest in stocks: "))
+        bonds_investment = float(input("Amount to invest in bonds: "))
+        cash_investment = float(input("Amount to invest in cash: "))
+        
+        # (2) Risk Level Selection
+        risk_level = input("Select a risk level (low risk, medium risk, high risk): ").lower()
+        risk_levels = {'low risk': 0.01, 'medium risk': 0.03, 'high risk': 0.05}
+        std_dev = risk_levels.get(risk_level, 0.01)
+
+        # (3) Benchmark Rate Input (Compare to S&P 500 for example)
+        benchmark_rate = float(input("Enter the benchmark annual return rate (S&P 500 was 26% last yr, but make sure to put as a decimal): "))
+        
+        # (4) Portfolio Setup
+        portfolio = {
+            "stocks": {"amount": stocks_investment, "rate": 0.07},
+            "bonds": {"amount": bonds_investment, "rate": 0.03},
+            "cash": {"amount": cash_investment, "rate": 0.01},
+        }
+
+        # (5) Growth Simulation
+        years = int(input("Enter the number of years for the simulation: "))
+        total_portfolio_value = 0
+        
+        for asset, details in portfolio.items():
+            total_portfolio_value += simulate_growth(details["amount"], details["rate"], years, std_dev)
+
+        # (6) Benchmark Growth Simulation
+        benchmark_growth = simulate_growth(sum(portfolio[asset]["amount"] for asset in portfolio), benchmark_rate, years, 0)
+
+        # (7) Performance Analysis (Showing the output of final portfolio)
+        print("\n--- Portfolio Growth Summary ---")
+        print(f"Final portfolio value: ${total_portfolio_value:.2f}")
+        print(f"Benchmark value: ${benchmark_growth:.2f}")
+        if total_portfolio_value > benchmark_growth:
+            print("Your portfolio outperformed the benchmark!")
+        else:
+            print("Your portfolio underperformed the benchmark.")
+
+        # (8) Program Loop (Self explanatory)
+        repeat = input("\nDo you want to run another simulation? (yes/no): ").lower()
+        if repeat != 'yes':
+            break
+
+# Run the main function
+if __name__ == "__main__":
+    main()
